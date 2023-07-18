@@ -16,6 +16,7 @@ import random
 
 
 def relu(x):
+    # np.maximum can work on a whole numpy array
     return np.maximum(0, x)
 
 
@@ -36,15 +37,23 @@ def getRandomQuadraticData():
 
 def initialiseLayers():
     # 10 nodes, 1 input, so 10 rows w 1 column each for matrix mul w input
-    W1 = np.random.randn(10, 2)
+    W1 = np.random.randn(10, 1)
     # 10 nodes, 1 bias each obvs
     b1 = np.random.randn(10, 1)
 
     # 1 output, which is number
-    W2 = np.random.randn(10, 1)
-    b2 = np.random.randn(10, 1)
+    W2 = np.random.randn(1, 10)
+    b2 = np.random.randn(1, 1)
 
     return W1, b1, W2, b2
+
+
+def forwardProp(X, W1, b1, W2, b2):
+    Z1 = W1.dot(X) + b1
+    A1 = relu(Z1)
+    Z2 = W2.dot(A1) + b2
+    A2 = Z2
+    return Z1, A1, Z2, A2
 
 
 if __name__ == "__main__":
@@ -52,5 +61,10 @@ if __name__ == "__main__":
     # For quadratic data, x_val = data[i][0], y_val = data[i][0]
     np.random.shuffle(data)
     print(data[:5].T)
-    dataTest = data[0:500].T
-    dataTest = data[500:].T
+    dataTest = data[0:500]
+    dataTrain = data[500:]
+
+    W1, b1, W2, b2 = initialiseLayers()
+    for x, y in dataTrain:
+        Z1, A1, Z2, A2 = forwardProp(x, W1, b1, W2, b2)
+        print(A2, y)
