@@ -23,7 +23,7 @@ def quadratic(x):
     return x ** 4 + 2 * x ** 3 - 2 * x - 10
 
 
-# Generates around 2000 pieces of data, in interval ~ [-10, 20]
+# Generates around 20,000 pieces of data, in interval ~ [-10, 20]
 def getRandomQuadraticData():
     data = []
     for i in range(-100000, 100000, 1):
@@ -34,7 +34,22 @@ def getRandomQuadraticData():
     return np.array(data)
 
 
+def initialiseLayers():
+    # 10 nodes, 1 input, so 10 rows w 1 column each for matrix mul w input
+    W1 = np.random.randn(10, 2)
+    # 10 nodes, 1 bias each obvs
+    b1 = np.random.randn(10, 1)
+
+    W2 = np.random.randn(10, 10)
+    b2 = np.random.randn(10, 1)
+
+    return W1, b1, W2, b2
+
+
 if __name__ == "__main__":
     data = getRandomQuadraticData()
+    # For quadratic data, x_val = data[i][0], y_val = data[i][0]
     np.random.shuffle(data)
+    dataTest = data[0:500]
+    dataTest = data[500:]
     print(data)
