@@ -16,7 +16,7 @@ import random
 
 
 def relu(x):
-    return max(0, x)
+    return np.maximum(0, x)
 
 
 def quadratic(x):
@@ -40,7 +40,8 @@ def initialiseLayers():
     # 10 nodes, 1 bias each obvs
     b1 = np.random.randn(10, 1)
 
-    W2 = np.random.randn(10, 10)
+    # 1 output, which is number
+    W2 = np.random.randn(10, 1)
     b2 = np.random.randn(10, 1)
 
     return W1, b1, W2, b2
@@ -50,6 +51,6 @@ if __name__ == "__main__":
     data = getRandomQuadraticData()
     # For quadratic data, x_val = data[i][0], y_val = data[i][0]
     np.random.shuffle(data)
-    dataTest = data[0:500]
-    dataTest = data[500:]
-    print(data)
+    print(data[:5].T)
+    dataTest = data[0:500].T
+    dataTest = data[500:].T
