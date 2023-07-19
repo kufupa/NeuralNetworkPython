@@ -24,7 +24,7 @@ def quadratic(x):
     return x ** 4 + 2 * x ** 3 - 2 * x - 10
 
 
-# Generates around 20,000 pieces of data, in interval ~ [-10, 20]
+# Generates around 20,000 pieces of data, in interval [-2,2] -> [-10, 20]
 def getRandomQuadraticData():
     data = []
     for i in range(-100000, 100000, 1):
