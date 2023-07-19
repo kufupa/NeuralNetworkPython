@@ -64,13 +64,14 @@ def reluG(x):
 
 def backwardsProp(X, Y, Z1, A1, Z2, A2, W2):
     m = Y.size
-    dZ2 = A2 - Y  # Since linear var
+    dA2 = A2 - Y  # Since linear output
+    dZ2 = dA2
     dW2 = 1 / m * dZ2.dot(A1.T)
     # db2 = 1 / m * dZ2
     db2 = 1 / m * np.sum(dZ2, 2)
 
-    # dA1 = dW2 * reluG(Z1)
-    dZ1 = W2.T.dot(dZ2) * reluG(Z1)
+    dA1 = W2.T.dot(dZ2)
+    dZ1 = dA1 * reluG(Z1)
     dW1 = 1 / m * dZ1.dot(X.T)
     db1 = 1 / m * np.sum(dZ1, 2)
 
@@ -85,15 +86,31 @@ def updateParams(alpha, W1, b1, W2, b2, dW1, db1, dW2, db2):
     return W1, b1, W2, b2
 
 
+def getPredictions(A2):
+    return np.argmax(A2, 0)
+
+
+def getAccuracy(predictions, Y):
+    return np.sum(np.abs(predictions - Y) < 0.1) / Y.size
+
+
+def gradientDescent(x, y, iterations, alpha):
+    W1, b1, W2, b2 = initialiseLayers()
+    for i in range(iterations):
+        Z1, A1, Z2, A2 = forwardProp(x, W1, b1, W2, b2)
+        dW1, db1, dW2, db2 = backwardsProp(x, y, Z1, A1, Z2, A2, W2)
+        W1, b1, W2, b2 = updateParams(alpha, W1, b1, W2, b2, dW1, db1, dW2, db2)
+        if i % 50 == 0:
+            print(f"Iteration {i}")
+            print(f"Accuracy :", getAccuracy(getPredictions(A2), Y))
+    return W1, b1, W2, b2
+
+
 if __name__ == "__main__":
     data = getRandomQuadraticData()
     # For quadratic data, x_val = data[i][0], y_val = data[i][0]
     np.random.shuffle(data)
     print(data[:5].T)
     dataTest = data[0:500]
-    dataTrain = data[500:]
-
-    for x, y in dataTrain:
-        Z1, A1, Z2, A2 = forwardProp(x, W1, b1, W2, b2)
-        dW1, db1, dW2, db2 = backwardsProp(x, y, Z1, A1, Z2, A2, W2)
-        print(A2, y)
+    dataTrain = data[500:].T
+    W1, b1, W2, b2 = gradientDescent(dataTrain[0], dataTrain[1], 200, 0.05)
