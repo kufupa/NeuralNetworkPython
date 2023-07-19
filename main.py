@@ -55,8 +55,6 @@ def forwardProp(X, W1, b1, W2, b2):
     A2 = Z2
     return Z1, A1, Z2, A2
 
-    dA1 = dZ2 * g(dZ1)
-
 
 def reluG(x):
     return x > 0
@@ -102,6 +100,7 @@ def gradientDescent(x, y, iterations, alpha):
         W1, b1, W2, b2 = updateParams(alpha, W1, b1, W2, b2, dW1, db1, dW2, db2)
         if i % 50 == 0:
             print(f"Iteration {i}")
+            print(f"W1[0] {W1[0]}")
             print(f"Accuracy :", getAccuracy(getPredictions(A2), y))
     return W1, b1, W2, b2
 
@@ -115,6 +114,6 @@ if __name__ == "__main__":
     W1, b1, W2, b2 = gradientDescent(
         np.reshape(dataTrain[0], (1, -1)),
         np.reshape(dataTrain[1], (1, -1)),
-        2000,
-        0.0005,
+        200,
+        0.005,
     )
