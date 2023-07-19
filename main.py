@@ -68,12 +68,12 @@ def backwardsProp(X, Y, Z1, A1, Z2, A2, W2):
     dZ2 = dA2
     dW2 = 1 / m * dZ2.dot(A1.T)
     # db2 = 1 / m * dZ2
-    db2 = 1 / m * np.sum(dZ2, 2)
+    db2 = 1 / m * np.sum(dZ2)
 
     dA1 = W2.T.dot(dZ2)
     dZ1 = dA1 * reluG(Z1)
     dW1 = 1 / m * dZ1.dot(X.T)
-    db1 = 1 / m * np.sum(dZ1, 2)
+    db1 = 1 / m * np.sum(dZ1)
 
     return dW1, db1, dW2, db2
 
@@ -102,7 +102,7 @@ def gradientDescent(x, y, iterations, alpha):
         W1, b1, W2, b2 = updateParams(alpha, W1, b1, W2, b2, dW1, db1, dW2, db2)
         if i % 50 == 0:
             print(f"Iteration {i}")
-            print(f"Accuracy :", getAccuracy(getPredictions(A2), Y))
+            print(f"Accuracy :", getAccuracy(getPredictions(A2), y))
     return W1, b1, W2, b2
 
 
@@ -110,7 +110,11 @@ if __name__ == "__main__":
     data = getRandomQuadraticData()
     # For quadratic data, x_val = data[i][0], y_val = data[i][0]
     np.random.shuffle(data)
-    print(data[:5].T)
-    dataTest = data[0:500]
+    dataTest = data[0:500].T
     dataTrain = data[500:].T
-    W1, b1, W2, b2 = gradientDescent(dataTrain[0], dataTrain[1], 200, 0.05)
+    W1, b1, W2, b2 = gradientDescent(
+        np.reshape(dataTrain[0], (1, -1)),
+        np.reshape(dataTrain[1], (1, -1)),
+        2000,
+        0.0005,
+    )
