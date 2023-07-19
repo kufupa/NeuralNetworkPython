@@ -55,6 +55,35 @@ def forwardProp(X, W1, b1, W2, b2):
     A2 = Z2
     return Z1, A1, Z2, A2
 
+    dA1 = dZ2 * g(dZ1)
+
+
+def reluG(x):
+    return x > 0
+
+
+def backwardsProp(X, Y, Z1, A1, Z2, A2, W2):
+    m = Y.size
+    dZ2 = A2 - Y  # Since linear var
+    dW2 = 1 / m * dZ2.dot(A1.T)
+    # db2 = 1 / m * dZ2
+    db2 = 1 / m * np.sum(dZ2, 2)
+
+    # dA1 = dW2 * reluG(Z1)
+    dZ1 = W2.T.dot(dZ2) * reluG(Z1)
+    dW1 = 1 / m * dZ1.dot(X.T)
+    db1 = 1 / m * np.sum(dZ1, 2)
+
+    return dW1, db1, dW2, db2
+
+
+def updateParams(alpha, W1, b1, W2, b2, dW1, db1, dW2, db2):
+    W1 = W1 - alpha * dW1
+    b1 = b1 - alpha * db1
+    W2 = W2 - alpha * dW2
+    b2 = b2 - alpha * db2
+    return W1, b1, W2, b2
+
 
 if __name__ == "__main__":
     data = getRandomQuadraticData()
@@ -64,7 +93,7 @@ if __name__ == "__main__":
     dataTest = data[0:500]
     dataTrain = data[500:]
 
-    W1, b1, W2, b2 = initialiseLayers()
     for x, y in dataTrain:
         Z1, A1, Z2, A2 = forwardProp(x, W1, b1, W2, b2)
+        dW1, db1, dW2, db2 = backwardsProp(x, y, Z1, A1, Z2, A2, W2)
         print(A2, y)
