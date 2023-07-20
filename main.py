@@ -120,9 +120,11 @@ if __name__ == "__main__":
     np.random.shuffle(data)
     dataTest = data[0:500].T
     dataTrain = data[500:].T
+
     W1, b1, W2, b2 = gradientDescent(
         np.reshape(dataTrain[0], (1, -1)),
         np.reshape(dataTrain[1], (1, -1)),
         200000,
         0.0005,
+        300,
     )
